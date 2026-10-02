@@ -134,7 +134,7 @@ double pie(long int n){
 	double leibPie = 1;
 	int denominator = 3;
 	int odd = 1;
-	while (n > 1) {
+	while (n > 0) {
 		if (odd == 1) {
 			leibPie = leibPie - (1.0/denominator);
 			odd = 0;
