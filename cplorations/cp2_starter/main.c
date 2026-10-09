@@ -73,13 +73,17 @@ char *welcome(char* hello, char* name) {
 void reverse(char* txt, char* result) {
 
 	/* run length function to find last valid index position */
-	/* concat each letter in backwards loop til 0 */
+	/* concat each letter in til counter reaches length */
+	/* variable "result" is type "char*" with length of name */
 	
-	int len = length(txt);
+	int len = length(txt); //calls earlier length function
+	int i = 0;
 	
-	for (int i = 0; i < len; i++) {
-		result[i] = txt[len - 1 - i];
+	while (i < len) {
+		result[i] = txt[len - 1 - i]; 
+		i++;
 	}
+	result[len] = '\0';
 	
 	return;
 }

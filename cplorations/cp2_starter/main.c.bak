@@ -75,11 +75,19 @@ void reverse(char* txt, char* result) {
 	/* run length function to find last valid index position */
 	/* concat each letter in backwards loop til 0 */
 	
-	int len = length(txt);
+	/* variable "result" is type "char" with length of name */
 	
-	for (int i = 0; i < len; i++) {
-		result[i] = txt[len - 1 - i];
+	int len = length(txt); //calls earlier length function
+	
+	int i = 0;
+	
+	while (i < len) {
+		result[i] = //position in result string 
+		txt[len - 1 - i]; //position in original text, account for off-by-one, minus the counter
+		i++;
 	}
+	
+	result[len] = '\0';
 	
 	return;
 }
@@ -161,10 +169,7 @@ int quartile(char* name) {
             continue;
         }
 
-        // Prepare a null-terminated string for the current alpha letter
         char current_alpha[2] = { alpha[pos], '\0' };
-
-        // Use strcmp to compare the two 1-character strings
         if (strcmp(target, current_alpha) == 0) {
             return quar;
         }
