@@ -9,7 +9,15 @@
 CHIP Or8Way {
     IN in[8];
     OUT out;
-
+    /* pseudo: if any input = 1, output 1
+    * build tiered OR tree
+    */
     PARTS:
-    //// Replace this comment with your code.
+    Or(a= in[0], b= in[1], out= outA);
+    Or(a= in[2], b= in[3], out= outB);
+    Or(a= in[4], b= in[5], out= outC);
+    Or(a= in[6], b= in[7], out= outD);
+    Or(a= outA, b= outB, out= outAA);
+    Or(a= outC, b= outD, out= outBB);
+    Or(a= outAA, b= outBB, out= out);
 }

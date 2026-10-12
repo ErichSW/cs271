@@ -13,6 +13,13 @@ CHIP DMux4Way {
     IN in, sel[2];
     OUT a, b, c, d;
 
+    /* use selector bit to determine index of out
+    *  use 
+    *  use tiered DMUX structure
+    */
+
     PARTS:
-    //// Replace this comment with your code.
+    DMux(in=in, sel=sel[1], a=AB, b=CD);
+    DMux(in=AB, sel=sel[0], a=a, b=b);
+    DMux(in=CD, sel=sel[0], a=c, b=d);
 }
