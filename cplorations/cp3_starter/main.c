@@ -28,7 +28,7 @@ int main(int argc, const char *argv[]) {
 	/* 3: open the input file */
 	FILE *fin = fopen( argv[1], "r" ); 		//read-only
 	if (argv[1] == NULL) {
-		perror("Can't open the file!");
+		perror("Can't open the file!");		//error output stream
 		exit(EXIT_FAILURE);
 	}
 	

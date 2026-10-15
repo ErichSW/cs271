@@ -41,5 +41,34 @@ CHIP ALU {
         ng;      // if (out < 0)  equals 1, else 0
 
     PARTS:
-    //// Replace this comment with your code.
+    
+    // process X side
+    Mux16(a=x, b=false, sel=zx, out=zeroedX); // create zero'd out X based on zx
+    Not16(in=zeroedX, out=notX);              // create temp not X value 
+    Mux16(a=zeroedX, b=notX, 
+        sel=nx, out=processedX); // choose based on nx
+ 
+    // process Y side
+    Mux16(a=y, b=false, sel=zy, out=zeroedY); // create zero'd out Y based on zy
+    Not16(in=zeroedY, out=notY);              // create temp not Y value
+    Mux16(a=zeroedY, b=notY, 
+        sel=ny, out=processedY); // choose based on ny
+
+    // process Add or AND operation (if f is 0, AND; if f is 1, Add)
+    And16(a=processedX, b=processedY, out=andXY);   // create AND'd value
+    Add16(a=processedX, b=processedY, out=addXY);   // create added value
+    Mux16(a=andXY, b=addXY, sel=f, out=combinedXY); // choose based on f
+
+    // process final bitflip (not a 2's complement)
+    Not16(in=combinedXY, out=bitflipXY);            // create bitflip value
+    Mux16(a=combinedXY, b=bitflipXY, sel=no, out=out, // choose based on no
+        out[15]=ng, // value is negative if leftmost digit is 1
+        out[0..7]=outLeft, out[8..15]=outRight);    // create temp pins for mass OR
+    
+    // process zr with mass OR ops
+    Or8Way(in=outLeft, out=zrLeft);
+    Or8Way(in=outRight, out=zrRight);
+    Or(a=zrLeft, b=zrRight , out=zrFalse); // result is inverted
+    Not(in=zrFalse, out=zr);
+
 }
