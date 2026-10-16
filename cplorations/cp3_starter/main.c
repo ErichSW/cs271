@@ -11,36 +11,39 @@
 #include <string.h>
 #define MAX_LINE_LENGTH  200
 
-
+// Goal of program: read and write a file
 
 /* 	argc is the number of arguments passed
 	argv[] is a pointer to an array of strings (array of array of characters)
-	1. accepting arguments
 */
 int main(int argc, const char *argv[]) {
 	
-	/* 2: find out if user inputted correct number of arguments */
 	if (argc != 2) {
 		printf("Usage: %s [filename]\n", argv[0]);
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE);		//ensure correct no. of args
 	}
 	
-	/* 3: open the input file */
-	FILE *fin = fopen( argv[1], "r" ); 		//read-only
+	FILE *fin = fopen( argv[1], "r" ); 		//read input file
 	if (argv[1] == NULL) {
 		perror("Can't open the file!");		//error output stream
 		exit(EXIT_FAILURE);
 	}
 	
-	/* 4: open the output file */
-	char out_file[99];
+	char out_file[256];
 	strcat (out_file, ".echo");
 	FILE *fout = fopen (out_file, "w+"); 	//writable
 	
 	/* 5: reading in the file */
+	char line[MAX_LINE_LENGTH] = {0};		//store current line
+	unsigned int line_num = 0;				//store current line number, unsigned because always positive
+	while (fgets(line, sizeof(line), fin)) {
+		line_num++;							// increment line no. variable
+		printf ("[%04d] %s", line_num, line);			// print line no. in brackets + text
+		fprintf (fout, "%s", line);						// print the line to output file (fprintf)
+	}
 	
-	
-	
+	fclose (fin);		// close file pointers
+	fclose (fout);
 	
 	return 1;
 }
