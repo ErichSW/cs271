@@ -1,3 +1,3 @@
-Erich Winchester
-This process is bananas
+Erich Winchester\n
+This process is bananas\n
 Super bananas
