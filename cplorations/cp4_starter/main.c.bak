@@ -11,21 +11,20 @@
 #include "parser.h" 	// contains all libraries
 
 int main(int argc, const char *argv[]) {
-	if (argc != 1) {
+	if (argc != 2) {
 		printf("Please select a file with 1 argument: %s [filename]\n", argv[0]);
 		exit(EXIT_FAILURE);					//ensure correct no. of args
 	}
 	
-	FILE *fin = fopen (argv[1], "r" ); 		//read input file
+	FILE *file = fopen (argv[1], "r" ); 	//read input file
 	
 	if (argv[1] == NULL) {
 		perror("Can't open the file!");		//error output stream
 		exit(EXIT_FAILURE);
 	}
 	
-	// call function 'parse'
-	// close file pointer
-	
+	parse (file);							// call function 'parse'
+	fclose (file);							// close file pointer
 }
 
 

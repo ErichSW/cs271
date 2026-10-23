@@ -16,10 +16,18 @@
  * returns: the stripped char* string
  */
 char *strip(char *s){	
-
 	
+	int i = 0;
+	for (char *s2 = s; *s2 != '\0'; s2++) {
+		if (*s2 == '/' && *(s2+1) == '/') { 		// ignore comments
+			break;
+		} else if (!isspace((unsigned char) *s2)) {	// if current char is not whitespace
+			s[i++] = *s2;
+		} 
+	}
+	s[i] = '\0';							// set ith index of s to be \0
 	
-    return s;	
+    return s;
 }
 
 /* Function: parse
@@ -35,10 +43,10 @@ void parse(FILE * file){
 	
 	char line[MAX_LINE_LENGTH];
 	
-	while (fgets(line, sizeof(line), fin)) {
+	while (fgets(line, sizeof(line), file)) {
 		strip(line);
 		if (*line != '\0') {		// if not *line then continue
-			printf ("%s", line);
+			printf ("%s\n", line);
 		}
 	}
 	
