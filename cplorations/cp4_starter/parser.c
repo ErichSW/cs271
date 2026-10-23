@@ -1,8 +1,8 @@
 /****************************************
  * C-ploration 4 for CS 271
  * 
- * [NAME] $YOUR_NAME$
- * [TERM] FALL $YEAR$
+ * [NAME] Erich Winchester
+ * [TERM] FALL 2026
  * 
  ****************************************/
 #include "parser.h"
@@ -17,7 +17,7 @@
  */
 char *strip(char *s){	
 
-	// your code here
+	
 	
     return s;	
 }
@@ -30,8 +30,16 @@ char *strip(char *s){
  *
  * returns: nothing
  */
+ 
 void parse(FILE * file){
 	
-	// your code here
+	char line[MAX_LINE_LENGTH];
+	
+	while (fgets(line, sizeof(line), fin)) {
+		strip(line);
+		if (*line != '\0') {		// if not *line then continue
+			printf ("%s", line);
+		}
+	}
 	
 }

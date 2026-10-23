@@ -1,17 +1,31 @@
 /****************************************
  * C-ploration 4 for CS 271
  * 
- * [NAME] $YOUR_NAME$
- * [TERM] FALL $YEAR$
+ * [NAME] Erich Winchester
+ * [TERM] FALL 2026
  * 
  ****************************************/
-#include "parser.h"
+ 
+ // Learning objective: strip away all comments and whitespace
+ 
+#include "parser.h" 	// contains all libraries
 
-int main(int argc, const char *argv[])
-{		
-
-	// your code here
-			
+int main(int argc, const char *argv[]) {
+	if (argc != 1) {
+		printf("Please select a file with 1 argument: %s [filename]\n", argv[0]);
+		exit(EXIT_FAILURE);					//ensure correct no. of args
+	}
+	
+	FILE *fin = fopen (argv[1], "r" ); 		//read input file
+	
+	if (argv[1] == NULL) {
+		perror("Can't open the file!");		//error output stream
+		exit(EXIT_FAILURE);
+	}
+	
+	parse(fin);								// call function 'parse'
+	// close file pointer
+	
 }
 
 
