@@ -12,6 +12,29 @@ CHIP RAM16K {
     IN in[16], load, address[14];
     OUT out[16];
 
+    // 1st eleven select register inside ram
+    // 2^12=4K
+    // last 2 select specific RAM chip
+    // 2^2=4
     PARTS:
-    //// Replace this comment with your code.
+    DMux4Way(
+        in=load,
+        sel=address[12..13], 
+        a=memA, 
+        b=memB, 
+        c=memC, 
+        d=memD);
+
+    RAM4K(in=in, load=memA, address=address[0..11], out=outA);
+    RAM4K(in=in, load=memB, address=address[0..11], out=outB);
+    RAM4K(in=in, load=memC, address=address[0..11], out=outC);
+    RAM4K(in=in, load=memD, address=address[0..11], out=outD);
+
+    Mux4Way16(
+        a=outA, 
+        b=outB, 
+        c=outC, 
+        d=outD,
+        sel=address[12..13], 
+        out=out);
 }

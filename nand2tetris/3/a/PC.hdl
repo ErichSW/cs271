@@ -10,9 +10,32 @@
  * else              out(t+1) = out(t)
  */
 CHIP PC {
-    IN in[16],inc, load, reset;
+    IN in[16], reset, load, inc;
     OUT out[16];
     
+    // reset is "start from 0"
+    // load is "go to n operation"
+    // inc is "next operation"
+    // if nothing active, do nothing
+    // priority is inc < load < reset
+    // ON MUX16, 0=A, 1=B !!!
+
     PARTS:
-    //// Replace this comment with your code.
+    
+    // Register for storage and looped output
+    Register(in=finalOut, load=loadOn, out=out, out=mem);
+    
+    // Increment fn, take value from register memory
+    Inc16(in=mem, out=memInc);
+    Mux16(a=in, b=memInc, sel=inc, out=incOut);
+    // Load fn, select between increment and new input
+    Mux16(a=incOut, b=in, sel=load, out=loadOut);
+    // Reset fn, select between prev and 0
+    Mux16(a=loadOut, b=false, sel=reset, out=finalOut);
+
+    // engage register if any control bits are on
+    Or8Way(in[0]=inc, in[1]=load, in[2]=reset, in[3..7]=false, out=loadOn);
+
+
+
 }

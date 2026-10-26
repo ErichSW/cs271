@@ -12,6 +12,40 @@ CHIP RAM8 {
     IN in[16], load, address[3];
     OUT out[16];
 
+    // use DMux8way to convert address value
+    // ...to memory index position
     PARTS:
-    //// Replace this comment with your code.
+    DMux8Way(
+        in=load,
+        sel=address, 
+        a=memA, 
+        b=memB, 
+        c=memC, 
+        d=memD, 
+        e=memE, 
+        f=memF, 
+        g=memG, 
+        h=memH);
+
+    // memory indexes
+    Register(in=in, load=memA, out=outA);
+    Register(in=in, load=memB, out=outB);
+    Register(in=in, load=memC, out=outC);
+    Register(in=in, load=memD, out=outD);
+    Register(in=in, load=memE, out=outE);
+    Register(in=in, load=memF, out=outF);
+    Register(in=in, load=memG, out=outG);
+    Register(in=in, load=memH, out=outH);
+
+    Mux8Way16(
+        a=outA, 
+        b=outB, 
+        c=outC, 
+        d=outD, 
+        e=outE, 
+        f=outF, 
+        g=outG, 
+        h=outH,
+        sel=address, 
+        out=out);
 }
