@@ -18,6 +18,6 @@ char *strip(char *s);
 
 void parse(FILE * file);
 
-bool is_Atype(const char *);
-bool is_label(const char *);
-bool is_Ctype(const char *);
+bool is_Atype(const char * line);	// const means read-only
+bool is_label(const char * line);
+bool is_Ctype(const char * line);
