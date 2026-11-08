@@ -1,5 +1,5 @@
 /****************************************
- * C-ploration 4 for CS 271
+ * C-ploration 6 for CS 271
  * 
  * [NAME] Erich Winchester
  * [TERM] FALL 2026
@@ -18,7 +18,7 @@ int main(int argc, const char *argv[]) {
 	
 	FILE *file = fopen (argv[1], "r" ); 	//read input file
 	
-	if (argv[1] == NULL) {
+	if (file == NULL) {
 		perror("Can't open the file!");		//error output stream
 		exit(EXIT_FAILURE);
 	}
@@ -27,4 +27,4 @@ int main(int argc, const char *argv[]) {
 	fclose (file);							// close file pointer
 }
 
-
+// a
