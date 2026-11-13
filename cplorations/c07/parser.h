@@ -1,0 +1,66 @@
+/****************************************
+ * C-ploration 7 for CS 271
+ * 
+ * [NAME] Erich Winchester
+ * [TERM] FALL 2026
+ * 
+ ****************************************/
+#include <stdio.h>		// input/output, file reading
+#include <string.h>		// strings
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdbool.h>	// booleans
+#include <stdint.h>		// more integer types
+
+#define MAX_LINE_LENGTH  200
+#define ALT_LINE LENGTH  (MAX_LINE_LENGTH - 2)
+
+/** function prototypes **/
+char *strip(char *s);
+bool is_Atype(const char *line);	// const means read-only
+bool is_Ctype(const char *line);
+bool is_label(const char *line);
+char *extract_label(const char *line, char *label);
+void parse(FILE *file);
+
+/* define 2 types */
+typedef int16_t hack_addr;
+typedef	int16_t opcode;
+
+
+enum season {
+	Winter = 1,
+	Spring,		// = 2
+	Summer,		// = 3
+	Autumn,		// = 4
+};
+
+typedef enum inst_type {
+	Invalid = -1,
+	A_Type,
+	C_Type,
+} inst_type;
+
+
+typedef struct c_instruction {
+	opcode a:1;
+	opcode comp:6;
+	opcode dest:3;
+	opcode jump:3;
+} c_instruction;
+
+typedef struct a_instruction {
+	union addr {
+		hack_addr address;
+		char *label;
+	};
+	bool is_addr;
+} a_instruction;
+
+typedef struct instruction {
+	union instruct {
+		a_instruction a_inst;
+		c_instruction c_inst;
+	};
+	inst_type type_inst;
+} instruction;
