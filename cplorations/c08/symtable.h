@@ -10,6 +10,7 @@
 
 // set up custom types
 typedef int16_t hack_addr;
+
 struct Symbol {
 	char 		*name;
 	hack_addr 	addr;
