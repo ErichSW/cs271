@@ -32,5 +32,76 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-	//// Replace this comment with your code.
+	// designate control bits (RIGHT TO LEFT)
+        // instruction[15] = op-code     (A-type or C-type)
+        // instruction[12] = a-bit       (a-side or m-side)
+        // instruction[11..6] = c-bits   (ALU control bits)
+        // instruction[5] = d-bit-A    (A register control)
+        // instruction[4] = d-bit-D    (D register control)
+        // instruction[3] = d-bit-M    (Memory control)
+        // instruction[2] = j-bit-1    (jump if out < 0)
+        // instruction[1] = j-bit-2    (jump if out = 0)
+        // instruction[0] = j-bit-3    (jump if out > 0)
+
+    // MUX16 #1
+        // selects between incoming instruction and calc from ALU
+        // selector = op-code; 0 is A-type (instruction), 1 is C-type (ALU output)
+    Mux16(a=instruction, b=aluOut, sel=instruction[15], out=instAC);
+
+    // A-Register
+        // feeds from MUX16 #1
+        // control bit = d-bit-A; if 1, stores input
+        // only load if instruct is both A-type and d-bit is on
+        // has a separate output that feeds to external bus addressM
+    Not(in=instruction[15], out=isA);
+    Or(a=isA, b=instruction[5], out=loadA);
+    ARegister(in=instAC, load=loadA, out=aRegister, out[0..14]=addressM);
+
+    // MUX16 #2 
+        // selects between incoming instruction and incoming memory
+        // selector = a-bit; 0 is a-side, 1 is m-side
+    Mux16(a=aRegister, b=inM, sel=instruction[12], out=instAM);
+
+    // D-Register
+        // feeds from ALU output
+        // control bit = d-bit-D; if 1, stores input
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=aluOut, load=loadD, out=dRegister);
+
+    // ALU
+        // performs operation on outputs from D-reg and MUX16 #2
+    ALU(x=dRegister, y=instAM, 
+        zx=instruction[11], 
+        nx=instruction[10], 
+        zy=instruction[9], 
+        ny=instruction[8], 
+        f =instruction[7],
+        no=instruction[6], 
+        out=aluOut,
+        out=outM,
+        zr=ZR,          // is zero?
+        ng=NG);         // is negative? used to determine jumps
+    // assert writeM if C-type and d-bit-M are both on
+    And(a=instruction[15], b=instruction[3], out=writeM);
+
+    // Jump code management
+        // use ZR and NG outputs from ALU to determine condition
+        // instruction[2]: <0, [1]: =0, [0]: >0
+        // feeds into program counter load pin
+        // only send if C-type instruction
+    Or(a=ZR, b=NG, out=nonPos);
+    Not(in=nonPos, out=pos);
+
+    And(a=instruction[2], b=NG, out=jlt);
+    And(a=instruction[1], b=ZR, out=jeq);
+    And(a=instruction[0], b=pos, out=jgt);
+
+    Or(a=jlt, b=jgt, out=jnonz);
+    Or(a=jnonz, b=jeq, out=prejump);
+    And(a=instruction[15], b=prejump, out=jump);
+
+    // Program Counter
+        // feeds from A-register, outputs to external pin pc
+        // reset with reset pin, ignore inc
+    PC(in=aRegister, load=jump, inc=true, reset=reset, out[0..14]=pc);
 }
