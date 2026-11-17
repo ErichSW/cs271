@@ -25,24 +25,15 @@ char* extract_label(const char* line, char* label);
 
 void parse(FILE * file);
 
-/* define 2 types */
 typedef int16_t hack_addr;
+
 typedef	int16_t opcode;
 
-
-enum season {
-	Winter = 1,
-	Spring,		// = 2
-	Summer,		// = 3
-	Autumn,		// = 4
-};
-
-enum inst_type {
+typedef enum inst_type {
 	Invalid = -1,
 	A_Type,
 	C_Type,
-};
-
+} inst_type;
 
 typedef struct c_instruction {
 	opcode a:1;
