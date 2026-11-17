@@ -5,6 +5,9 @@
  * [TERM] FALL 2026
  * 
  ****************************************/
+#ifndef PARSER_H		// prevents redefinition later
+#define PARSER_H
+ 
 #include <stdio.h>		// input/output, file reading
 #include <string.h>		// strings
 #include <stdlib.h>
@@ -13,7 +16,7 @@
 #include <stdint.h>		// more integer types
 
 #define MAX_LINE_LENGTH  200
-#define ALT_LINE LENGTH  (MAX_LINE_LENGTH - 2)
+#define ALT_LINE_LENGTH  (MAX_LINE_LENGTH - 2)
 
 /** function prototypes **/
 char *strip(char *s);
@@ -23,44 +26,39 @@ bool is_label(const char *line);
 char *extract_label(const char *line, char *label);
 void parse(FILE *file);
 
-/* define 2 types */
+/* define new types */
 typedef int16_t hack_addr;
 typedef	int16_t opcode;
 
-
-enum season {
-	Winter = 1,
-	Spring,		// = 2
-	Summer,		// = 3
-	Autumn,		// = 4
-};
-
-typedef enum inst_type {
+/* build data structure */
+typedef enum instruction{
 	Invalid = -1,
-	A_Type,
-	C_Type,
-} inst_type;
+	A_Type, // = 0
+	C_Type, // = 1
+} instruction_type;
 
-
-typedef struct c_instruction {
+typedef struct c_instruction{
 	opcode a:1;
 	opcode comp:6;
 	opcode dest:3;
 	opcode jump:3;
-} c_instruction;
+} c_instruction_type;
 
-typedef struct a_instruction {
-	union addr {
+typedef struct a_instruction{
+	union {
 		hack_addr address;
 		char *label;
-	};
+	} addr;
 	bool is_addr;
-} a_instruction;
+} a_instruction_type;
 
-typedef struct instruction {
-	union instruct {
-		a_instruction a_inst;
-		c_instruction c_inst;
-	};
-	inst_type type_inst;
-} instruction;
+typedef struct complete_instruction{
+	union {
+		a_instruction_type a;
+		c_instruction_type c;
+	} instruct;
+	instruction_type type;
+} complete_instruction_type;
+
+
+#endif

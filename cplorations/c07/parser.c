@@ -6,6 +6,7 @@
  * 
  ****************************************/
 #include "parser.h"
+#include "symtable.h"
 
 /* Function: strip
  * -------------
@@ -54,7 +55,7 @@ bool is_Ctype(const char *line) {
 	
 	char Ctype[] = "ADM0";					// make list array of all possible starting values
 	int i = 0;								// cycle through list until match is found
-	while (i <= strlen(Ctype)) {
+	while (i < strlen(Ctype)) {
 		if (line[0] == Ctype[i]) {
 			return true;
 		}
@@ -113,6 +114,7 @@ void parse(FILE *file){
 	
 	char line[MAX_LINE_LENGTH];
 	char label[MAX_LINE_LENGTH];
+	int rom_address = 0;
 	
 	while (fgets(line, sizeof(line), file)) {
 		
@@ -121,18 +123,23 @@ void parse(FILE *file){
 		char inst_type;						// determine instruction type
 		if (is_Atype(line) == true) {
 			inst_type = 'A';
+			rom_address++;
 		} else if (is_label(line) == true) {
 			inst_type = 'L';
 			extract_label(line, label);
 			strcpy(line, label);
+			symtable_insert(label, rom_address);
 		} else if (is_Ctype(line) == true) {
 			inst_type = 'C';
+			rom_address++;
 		} else {
 			inst_type = '\0';
 		}
 		
 		if (*line != '\0') {				// if not *line then continue
-			printf ("%c  %s\n", inst_type, line);
+			// commented out temporarily
+			//printf ("%c  %s\n", inst_type, line); 
+			
 		}
 	}
 	

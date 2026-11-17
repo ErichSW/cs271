@@ -8,7 +8,8 @@
  
  // Learning objective: strip away all comments and whitespace
  
-#include "parser.h" 	// contains all libraries
+#include "parser.h"
+#include "symtable.h"
 
 int main(int argc, const char *argv[]) {
 	if (argc != 2) {
@@ -24,6 +25,7 @@ int main(int argc, const char *argv[]) {
 	}
 	
 	parse (file);							// call function 'parse'
+	symtable_print_labels();				// print hash table
 	fclose (file);							// close file pointer
 }
 

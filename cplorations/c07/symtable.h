@@ -6,19 +6,32 @@
  * 
  ****************************************/
 #include "parser.h"
- 
 #define SYMBOL_TABLE_SIZE  1000
 
-typedef struct address {
-	int16_t hack_addr;
-} address;
 
-//struct DataItem *hashArray[SYMBOL_TABLE_SIZE];
-//struct DataItem *dummyItem;
-//struct DataItem *item;
+// set up custom types
+typedef int16_t hack_addr;
+struct Symbol {
+	char 		*name;
+	hack_addr 	addr;
+};
 
-int hash(int *str);
+
+/* Prototype functions: functions without brackets
+ * 
+ * What are these for?
+ * If you get a conflicting type error, it's because
+ * ...the function is different from the prototype.
+ */
+
+// hash prototypes
+int hash_fn(char *str);
 struct Symbol *symtable_find(char *key);
-void symtable_insert(char *key, hack_addr addr);
+void symtable_insert(char* key, hack_addr addr);
 void symtable_display_table();
 void symtable_print_labels();
+
+/* unused prototypes
+struct DataItem *hashArray[SYMBOL_TABLE_SIZE];
+struct DataItem *item;
+*/
