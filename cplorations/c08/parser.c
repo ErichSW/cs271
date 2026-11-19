@@ -1,12 +1,6 @@
-/****************************************
- * C-ploration 8 for CS 271
- * 
- * [NAME] Erich Winchester
- * [TERM] FALL 2026
- * 
- ****************************************/
 #include "parser.h"
 #include "symtable.h"
+#include "error.h"
 
 /* Function: strip
  * -------------
@@ -85,8 +79,8 @@ bool is_label(const char *line) {
  *
  */
 char *extract_label(const char *line, char *label) {
-	// label is line without front and back brackets
 
+	// label is line without front and back parentheses
 	int label_pos = 0;
 	int line_pos = 1;
 	int len = strlen(line);
@@ -115,8 +109,15 @@ void parse(FILE *file){
 	char line[MAX_LINE_LENGTH];
 	char label[MAX_LINE_LENGTH];
 	int rom_address = 0;
+	unsigned int line_num = 0;
+	unsigned int instr_num = 0;
 	
 	while (fgets(line, sizeof(line), file)) {
+		
+		line_num++;
+		if (instr_num > MAX_INSTRUCTIONS) {
+			exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS + 1);
+		}
 		
 		strip(line);
 		
@@ -128,7 +129,20 @@ void parse(FILE *file){
 			inst_type = 'L';
 			extract_label(line, label);
 			strcpy(line, label);
-			symtable_insert(label, rom_address);
+			
+			// error: check if label starts with non-alpha character
+			if (isalpha(label[0]) != 1) {
+				exit_program(EXIT_INVALID_LABEL, line_num, line);
+			}
+			
+			// error: check if symbol table already contains label
+			if (symtable_find(label) != 1) {
+				exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
+			}
+	
+			symtable_insert(label, instr_num);
+			//symtable_insert(label, rom_address);
+			
 		} else if (is_Ctype(line) == true) {
 			inst_type = 'C';
 			rom_address++;
@@ -137,10 +151,8 @@ void parse(FILE *file){
 		}
 		
 		if (*line != '\0') {				// if not *line then continue
-			// commented out temporarily
-			//printf ("%c  %s\n", inst_type, line); 
+			printf("%u: %c  %s\n", instr_num, inst_type, line);
 			
 		}
 	}
-	
 }

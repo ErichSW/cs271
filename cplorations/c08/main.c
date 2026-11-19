@@ -5,24 +5,24 @@
  * [TERM] FALL 2026
  * 
  ****************************************/
+ 
 #include "parser.h"
 #include "symtable.h"
+#include "error.h"
 
 int main(int argc, const char *argv[]) {
 	if (argc != 2) {
-		printf("Please select a file with 1 argument: %s [filename]\n", argv[0]);
-		exit(EXIT_FAILURE);					//ensure correct no. of args
-	}
-	
+		// incorrect number of arguments
+		exit_program(EXIT_INCORRECT_ARGUMENTS, argv[0]);        
+	}  
+
 	FILE *file = fopen (argv[1], "r" ); 	//read input file
 	
-	if (file == NULL) {
-		perror("Can't open the file!");		//error output stream
-		exit(EXIT_FAILURE);
-	}
+	if (file == NULL){ 
+		exit_program(EXIT_CANNOT_OPEN_FILE, argv[1]);
+	}	
 	
 	parse (file);							// call function 'parse'
-	symtable_print_labels();				// print hash table
 	fclose (file);							// close file pointer
 }
 

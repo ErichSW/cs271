@@ -1,10 +1,3 @@
-/****************************************
- * C-ploration 8 for CS 271
- * 
- * [NAME] Erich Winchester
- * [TERM] FALL 2026
- * 
- ****************************************/
 #ifndef PARSER_H		// prevents redefinition later
 #define PARSER_H
  
@@ -17,6 +10,8 @@
 
 #define MAX_LINE_LENGTH  200
 #define ALT_LINE_LENGTH  (MAX_LINE_LENGTH - 2)
+#define MAX_HACK_ADDRESS  INT16_MAX
+#define MAX_INSTRUCTIONS  MAX_HACK_ADDRESS
 
 /** function prototypes **/
 char *strip(char *s);

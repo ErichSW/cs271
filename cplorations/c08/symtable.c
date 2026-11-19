@@ -1,10 +1,3 @@
-/****************************************
- * C-ploration 8 for CS 271
- * 
- * [NAME] Erich Winchester
- * [TERM] FALL 2026
- * 
- ****************************************/
 #include "symtable.h"
  
 struct Symbol *hashArray[SYMBOL_TABLE_SIZE]; 
