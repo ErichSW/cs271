@@ -108,51 +108,37 @@ void parse(FILE *file){
 	
 	char line[MAX_LINE_LENGTH];
 	char label[MAX_LINE_LENGTH];
-	int rom_address = 0;
 	unsigned int line_num = 0;
 	unsigned int instr_num = 0;
 	
 	while (fgets(line, sizeof(line), file)) {
-		
+
 		line_num++;
+
 		if (instr_num > MAX_INSTRUCTIONS) {
 			exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS + 1);
 		}
-		
+
 		strip(line);
-		
-		char inst_type;						// determine instruction type
-		if (is_Atype(line) == true) {
-			inst_type = 'A';
-			rom_address++;
-		} else if (is_label(line) == true) {
-			inst_type = 'L';
+
+		if (is_label(line)) {
 			extract_label(line, label);
-			strcpy(line, label);
-			
-			// error: check if label starts with non-alpha character
-			if (isalpha(label[0]) != 1) {
+			strcpy(line, label);                       // for error messages
+
+			if (!isalpha((unsigned char)label[0])) {
 				exit_program(EXIT_INVALID_LABEL, line_num, line);
 			}
-			
-			// error: check if symbol table already contains label
-			if (symtable_find(label) != 1) {
+			if (symtable_find(label) != NULL) {
 				exit_program(EXIT_SYMBOL_ALREADY_EXISTS, line_num, line);
 			}
-	
-			symtable_insert(label, instr_num);
-			//symtable_insert(label, rom_address);
-			
-		} else if (is_Ctype(line) == true) {
-			inst_type = 'C';
-			rom_address++;
-		} else {
-			inst_type = '\0';
-		}
-		
-		if (*line != '\0') {				// if not *line then continue
+
+			symtable_insert(label, instr_num);         // address of NEXT instruction
+
+		} else if (*line != '\0') {
+			char inst_type = is_Atype(line) ? 'A' :
+							 is_Ctype(line) ? 'C' : '\0';
 			printf("%u: %c  %s\n", instr_num, inst_type, line);
-			
+			instr_num++;
 		}
 	}
 }

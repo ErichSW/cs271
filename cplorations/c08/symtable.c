@@ -56,8 +56,8 @@ void symtable_insert(char *key,hack_addr addr) {
 		hashIndex++;
 		hashIndex %= SYMBOL_TABLE_SIZE;		// wrap around table
 	 }
-	return NULL;
- };
+	return NULL; 
+ }
  
  /* Function: symtable_display_table
  * -------------
