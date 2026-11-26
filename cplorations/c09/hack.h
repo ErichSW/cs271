@@ -1,3 +1,6 @@
+#ifndef HACK_H		// prevents redefinition later
+#define HACK_H
+
 #define NUM_PREDEFINED_SYMBOLS 23
 
 typedef enum symbol_id {
@@ -31,7 +34,7 @@ typedef struct predefined_symbol {
 	int16_t address;
 } predefined_symbol_t;
 
-static const predefined_symbol predefined_symbols[NUM_PREDEFINED_SYMBOLS] = {
+static const predefined_symbol_t predefined_symbols[NUM_PREDEFINED_SYMBOLS] = {
     {"R0", SYM_R0}, 
     {"R1", SYM_R1},
     {"R2", SYM_R2}, 
@@ -57,3 +60,4 @@ static const predefined_symbol predefined_symbols[NUM_PREDEFINED_SYMBOLS] = {
     {"THAT", SYM_THAT},
 };
 
+#endif

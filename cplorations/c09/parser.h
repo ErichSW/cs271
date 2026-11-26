@@ -58,5 +58,6 @@ typedef struct complete_instruction{
 	instruction_type type;
 } complete_instruction_type;
 
+bool parse_A_instruction (const char *line, a_instruction_type *instr);
 
 #endif

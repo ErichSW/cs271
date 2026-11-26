@@ -22,7 +22,8 @@ int main(int argc, const char *argv[]) {
 	}	
 	
 	parse (file);							// call function 'parse'
+	symtable_print_labels();
 	fclose (file);							// close file pointer
 }
 
-// aa
+// a

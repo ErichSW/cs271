@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "symtable.h"
 #include "error.h"
+#include "hack.h"
 
 /* Function: strip
  * -------------
@@ -96,14 +97,45 @@ char *extract_label(const char *line, char *label) {
 }
 
 /* Function: add_predefined_symbols
-
-*/
+ * -------------
+ * add special hack symbols into hash table
+ *
+ */
 void add_predefined_symbols() {
-	for (int i =0; i < NUM_PREDEFINED_SYMBOLS; i++) {
-		
+	for (int i =0; i < NUM_PREDEFINED_SYMBOLS; i++) {	// 23 loops
+		struct predefined_symbol sym = predefined_symbols[i];
+		symtable_insert (sym.name, sym.address);
 	}
 	
 }
+
+/* Function: parse_A_instruction
+ * -------------
+ * fill up an "a_instruction" with the contents of "line"
+ *
+ * return boolean pass or fail
+ */
+bool parse_A_instruction (const char *line, a_instruction_type *instr) {
+	
+	char *s = malloc(strlen(line));
+	
+	*s = *line+1;						// skip @ character
+	char *s_end = NULL;
+	long result = strtol(s, &s_end, 10);	// string-to-long base 10
+	
+	if (*s == *s_end) {			// case 1: string (valid label)
+		instr->addr.label = malloc(strlen(line));
+		instr->addr.label = s;
+		instr->is_addr = false;		// is a label
+	} else if (*s_end != 0) {	// case 2: letters and numbers (invalid)
+		return false;
+	} else {						// if number
+		instr->addr.address = result;
+		instr->is_addr = true;	// case 3: number (valid address)
+	}
+	return true;
+}
+
 
 /** Primary Function: parser
  * -------------
@@ -119,6 +151,9 @@ void parse(FILE *file){
 	char label[MAX_LINE_LENGTH];
 	unsigned int line_num = 0;
 	unsigned int instr_num = 0;
+	complete_instruction_type instr;
+	
+	add_predefined_symbols();
 	
 	while (fgets(line, sizeof(line), file)) {
 
@@ -144,10 +179,23 @@ void parse(FILE *file){
 			symtable_insert(label, instr_num);         // address of NEXT instruction
 
 		} else if (*line != '\0') {
-			char inst_type = is_Atype(line) ? 'A' :
-							 is_Ctype(line) ? 'C' : '\0';
-			printf("%u: %c  %s\n", instr_num, inst_type, line);
+			char inst_type;
+			if (is_Atype(line)) {
+				inst_type = 'A';
+				if (!parse_A_instruction(line, &instr.instruct.a)){
+					exit_program(EXIT_INVALID_A_INSTR, line_num, line);
+				}
+				instr.type = A_Type;
+			} else if (is_Ctype(line)) {
+				inst_type = 'C';
+			} else {
+				inst_type = '\0';
+			}
+			// temporary comment out
+			//printf("%u: %c  %s\n", instr_num, inst_type, line);
 			instr_num++;
 		}
 	}
+	//symtable_display_table();
+	
 }
