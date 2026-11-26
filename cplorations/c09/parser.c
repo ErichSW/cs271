@@ -118,8 +118,8 @@ void add_predefined_symbols() {
 bool parse_A_instruction (const char *line, a_instruction_type *instr) {
 	
 	char *s = malloc(strlen(line));
-	
-	*s = *line+1;						// skip @ character
+		
+	strcpy(s, line +1);			// skip @ character
 	char *s_end = NULL;
 	long result = strtol(s, &s_end, 10);	// string-to-long base 10
 	
